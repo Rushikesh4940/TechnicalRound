@@ -1,0 +1,13 @@
+<resources>
+    <string name="app_name">Technical Round</string>
+    <string name="technical_round">Technical Round</string>
+    <string name="welcome_to_the_round">Welcome to the round</string>
+    <string name="Welcome_To_The_Round">Welcome_To_The_Round</string>
+    <string name="please_enter_your_name">Please Enter Your Name</string>
+    <string name="enter_your_name">Enter Your Name</string>
+    <string name="next">NEXT</string>
+    <string name="submit">SUBMIT</string>
+    <string name="empty">Empty</string>
+    <string name="_0">0</string>
+
+</resources>
