@@ -1,102 +1,80 @@
 package com.example.technicalround
 
-import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.widget.Button
-import android.widget.TextView
+import android.util.Log
 import android.widget.Toast
+import com.example.technicalround.databinding.ActivityQuizquestionBinding
+import retrofit2.Call
+import retrofit2.Callback
+import retrofit2.Response
 
-class quizquestion : AppCompatActivity() {
+
+class quizquestion() : AppCompatActivity() {
+    lateinit var binding: ActivityQuizquestionBinding
+    var questions = mutableListOf<String>()
+    var correct=mutableListOf<String>()
+    var wrong= mutableListOf<String>()
+    var wrongans= mutableListOf(wrong);
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_quizquestion)
+         val ls: Call<List<responseDataClass>>?
+        binding = ActivityQuizquestionBinding.inflate(layoutInflater)
+        setContentView(binding.root)
+        getdata()
+        val value = questions . size . toString ()
+        Toast.makeText(this,value,Toast.LENGTH_LONG).show()
+//        var  i:Int=0
+//        if(!questions.equals(null))
+//        binding.question.setText(questions.get(i))
+//        binding.NEXT.setOnClickListener {
+//            i++;
+//            if(i<20){
+//                this.recreate();
+//            }
+//            else{
+//                i=0;
+//                binding.submit.performClick();
+//            }
+//        }
 
-        val ques=findViewById<TextView>(R.id.question)
-        val option1=findViewById<Button>(R.id.option1)
-        val option2=findViewById<Button>(R.id.option2)
-        val option3=findViewById<Button>(R.id.option3)
-        val option4=findViewById<Button>(R.id.option4)
-        val next=findViewById<Button>(R.id.NEXT)
-        val submit=findViewById<Button>(R.id.submit)
-       val score=findViewById<TextView>(R.id.countit)
-        var count=0
-        ques.text = "hello "
-        option1.text = "OPTION1"
-        option2.text = "option2"
-        val correctAns:String="OPTION1"
-        option1.setOnClickListener {
-            Toast.makeText(this, correctAns, Toast.LENGTH_SHORT).show()
-            option2.isEnabled=false
-            option3.isEnabled=false
-            option4.isEnabled=false
-            if(option1.text.equals(correctAns)){
-                option1.setBackgroundColor(resources.getColor(R.color.green))
-                count++
-                score.text = count.toString()
 
-            }
-            else{
-                option1.setBackgroundColor(resources.getColor(R.color.Red))
-            }
 
-        }
-        option2.setOnClickListener {
-            option1.isEnabled=false
-            option3.isEnabled=false
-            option4.isEnabled=false
-            if(option2.text.equals(correctAns)){
-                option2.setBackgroundColor(resources.getColor(R.color.green))
-                count++
-                score.text = count.toString()
-            }
-            else{
-                option2.setBackgroundColor(resources.getColor(R.color.Red))
-            }
-        }
-        option3.setOnClickListener {
-            option1.isEnabled=false
-            option2.isEnabled=false
-            option4.isEnabled=false
-            if(option3.text.equals(correctAns)){
-                option3.setBackgroundColor(resources.getColor(R.color.green))
-                count++
-                score.text = count.toString()
-            }
-            else{
-                option3.setBackgroundColor(resources.getColor(R.color.Red))
-            }
-        }
-        option4.setOnClickListener {
-            option1.isEnabled=false
-            option2.isEnabled=false
-            option3.isEnabled=false
-            if(option4.text.equals(correctAns)){
-                option4.setBackgroundColor(resources.getColor(R.color.green))
-                count++
-                score.text = count.toString()
-            }
-            else{
-                option4.setBackgroundColor(resources.getColor(R.color.Red))
-            }
-        }
-        next.setOnClickListener {
+    }
 
-            ques.text="nextQuestion"
-            option1.setBackgroundColor(resources.getColor(R.color.grey))
-            option2.setBackgroundColor(resources.getColor(R.color.grey))
-            option3.setBackgroundColor(resources.getColor(R.color.grey))
-            option4.setBackgroundColor(resources.getColor(R.color.grey))
-            option1.isEnabled=true
-            option2.isEnabled=true
-            option3.isEnabled=true
-            option4.isEnabled=true
-        }
-        submit.setOnClickListener {
-            val Intentq=Intent(this,MainActivity::class.java)
-            count=0
-            startActivity(Intentq)
-            finish()
-        }
+    fun getdata() {
+//
+
+        RetrofitInstance.apiInterface.getdata()
+            ?.enqueue(object : Callback<List<responseDataClass>?> {
+                override fun onResponse(
+
+                    call: Call<List<responseDataClass>?>,
+                    response: Response<List<responseDataClass>?>,
+                ) {
+                    Toast.makeText(this@quizquestion,"welcome",Toast.LENGTH_LONG).show()
+                    response.body()?.get(1)?.results?.get(1)?.question?.forEach { item ->
+
+                        questions.add(item.toString())
+                    }
+                    response.body()?.get(1)?.results?.get(1)?.correct_answer?.forEach { item->
+                        correct.add(item.toString())
+                    }
+                    response.body()?.get(1)?.results?.get(1)?.incorrect_answers?.forEach { item->
+                        wrong.add(item[0].toString())
+                        wrong.add(item[1].toString())
+                        wrong.add(item[2].toString())
+                        wrongans.add(wrong)
+                    }
+
+                }
+
+                override fun onFailure(call: Call<List<responseDataClass>?>, t: Throwable) {
+                  Toast.makeText(this@quizquestion,"error",Toast.LENGTH_LONG)
+                }
+            })
     }
 }
+
+
+
